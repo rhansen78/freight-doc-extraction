@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.DS_Store
+
+# Eval outputs are regenerated from a seed; only checked-in reference runs live
+# in evals/results/, and those are added deliberately.
+evals/results/*.json
+!evals/results/heldout_*.json
+
+# Never commit an API key.
+.env
+.env.*

@@ -1,0 +1,529 @@
+{
+  "meta": {
+    "extractor": "stub",
+    "split": "heldout",
+    "seed": 20260823,
+    "is_stub": true,
+    "confidence_floor": 0.75
+  },
+  "summary": {
+    "n_docs": 30,
+    "field_accuracy": 0.8936170212765957,
+    "hallucination_rate": 0.29545454545454547,
+    "absence_recall": 0.7045454545454546,
+    "auto_post_rate": 0.3,
+    "escalation_rate": 0.7,
+    "escaped_defect_rate": 0.4444444444444444,
+    "unnecessary_escalation_rate": 0.0,
+    "defect_rate": 0.8333333333333334,
+    "latency_p50_ms": 921.8444363200233,
+    "latency_p95_ms": 1301.6305815917765,
+    "cost_usd_total": null,
+    "by_layout": {
+      "narrative_v2": 0.9318181818181818,
+      "scan_noise_v3": 0.8503937007874016,
+      "tabular_v1": 0.8974358974358975
+    }
+  },
+  "documents": [
+    {
+      "doc_id": "doc_0030",
+      "layout": "tabular_v1",
+      "escalate": true,
+      "reasons": [
+        "validation_error:unknown_currency",
+        "low_confidence:0.57<0.75",
+        "sparse_document:4_unresolved"
+      ],
+      "wrong_fields": [
+        "supplier_name",
+        "currency"
+      ],
+      "hallucinated": [],
+      "issues": [
+        "unknown_currency"
+      ],
+      "defective": true
+    },
+    {
+      "doc_id": "doc_0031",
+      "layout": "narrative_v2",
+      "escalate": false,
+      "reasons": [],
+      "wrong_fields": [],
+      "hallucinated": [],
+      "issues": [],
+      "defective": false
+    },
+    {
+      "doc_id": "doc_0032",
+      "layout": "scan_noise_v3",
+      "escalate": true,
+      "reasons": [
+        "validation_error:critical_field_missing,silent_null,unknown_currency",
+        "critical_unresolved:invoice_date",
+        "low_confidence:0.00<0.75"
+      ],
+      "wrong_fields": [
+        "invoice_date",
+        "currency",
+        "vat_amount"
+      ],
+      "hallucinated": [
+        "supplier_vat",
+        "customer_name"
+      ],
+      "issues": [
+        "critical_field_missing",
+        "silent_null",
+        "silent_null",
+        "unknown_currency"
+      ],
+      "defective": true
+    },
+    {
+      "doc_id": "doc_0033",
+      "layout": "tabular_v1",
+      "escalate": false,
+      "reasons": [],
+      "wrong_fields": [],
+      "hallucinated": [],
+      "issues": [],
+      "defective": false
+    },
+    {
+      "doc_id": "doc_0034",
+      "layout": "narrative_v2",
+      "escalate": false,
+      "reasons": [],
+      "wrong_fields": [],
+      "hallucinated": [],
+      "issues": [],
+      "defective": false
+    },
+    {
+      "doc_id": "doc_0035",
+      "layout": "scan_noise_v3",
+      "escalate": true,
+      "reasons": [
+        "low_confidence:0.72<0.75"
+      ],
+      "wrong_fields": [
+        "invoice_number"
+      ],
+      "hallucinated": [],
+      "issues": [],
+      "defective": true
+    },
+    {
+      "doc_id": "doc_0036",
+      "layout": "tabular_v1",
+      "escalate": true,
+      "reasons": [
+        "validation_error:total_reconciliation,vat_rate_reconciliation"
+      ],
+      "wrong_fields": [
+        "vat_amount"
+      ],
+      "hallucinated": [
+        "due_date",
+        "supplier_vat"
+      ],
+      "issues": [
+        "total_reconciliation",
+        "vat_rate_reconciliation"
+      ],
+      "defective": true
+    },
+    {
+      "doc_id": "doc_0037",
+      "layout": "narrative_v2",
+      "escalate": true,
+      "reasons": [
+        "validation_error:silent_null"
+      ],
+      "wrong_fields": [
+        "parcel_count"
+      ],
+      "hallucinated": [],
+      "issues": [
+        "silent_null"
+      ],
+      "defective": true
+    },
+    {
+      "doc_id": "doc_0038",
+      "layout": "scan_noise_v3",
+      "escalate": true,
+      "reasons": [
+        "validation_error:critical_field_missing,silent_null,vat_rate_reconciliation",
+        "critical_unresolved:invoice_number",
+        "low_confidence:0.00<0.75"
+      ],
+      "wrong_fields": [
+        "invoice_number",
+        "total",
+        "vat_rate"
+      ],
+      "hallucinated": [],
+      "issues": [
+        "critical_field_missing",
+        "silent_null",
+        "vat_rate_reconciliation"
+      ],
+      "defective": true
+    },
+    {
+      "doc_id": "doc_0039",
+      "layout": "tabular_v1",
+      "escalate": true,
+      "reasons": [
+        "validation_error:critical_field_missing,silent_null",
+        "critical_unresolved:total",
+        "low_confidence:0.00<0.75"
+      ],
+      "wrong_fields": [
+        "total",
+        "due_date"
+      ],
+      "hallucinated": [],
+      "issues": [
+        "critical_field_missing",
+        "silent_null",
+        "silent_null"
+      ],
+      "defective": true
+    },
+    {
+      "doc_id": "doc_0040",
+      "layout": "narrative_v2",
+      "escalate": false,
+      "reasons": [],
+      "wrong_fields": [
+        "parcel_count"
+      ],
+      "hallucinated": [],
+      "issues": [],
+      "defective": true
+    },
+    {
+      "doc_id": "doc_0041",
+      "layout": "scan_noise_v3",
+      "escalate": true,
+      "reasons": [
+        "validation_error:silent_null"
+      ],
+      "wrong_fields": [
+        "shipment_ref",
+        "vat_amount"
+      ],
+      "hallucinated": [],
+      "issues": [
+        "silent_null"
+      ],
+      "defective": true
+    },
+    {
+      "doc_id": "doc_0042",
+      "layout": "tabular_v1",
+      "escalate": true,
+      "reasons": [
+        "low_confidence:0.70<0.75"
+      ],
+      "wrong_fields": [
+        "invoice_number"
+      ],
+      "hallucinated": [
+        "shipment_ref"
+      ],
+      "issues": [],
+      "defective": true
+    },
+    {
+      "doc_id": "doc_0043",
+      "layout": "narrative_v2",
+      "escalate": false,
+      "reasons": [],
+      "wrong_fields": [],
+      "hallucinated": [],
+      "issues": [],
+      "defective": false
+    },
+    {
+      "doc_id": "doc_0044",
+      "layout": "scan_noise_v3",
+      "escalate": true,
+      "reasons": [
+        "validation_error:silent_null,unknown_currency",
+        "low_confidence:0.66<0.75"
+      ],
+      "wrong_fields": [
+        "currency",
+        "customer_name"
+      ],
+      "hallucinated": [],
+      "issues": [
+        "silent_null",
+        "unknown_currency"
+      ],
+      "defective": true
+    },
+    {
+      "doc_id": "doc_0045",
+      "layout": "tabular_v1",
+      "escalate": false,
+      "reasons": [],
+      "wrong_fields": [],
+      "hallucinated": [],
+      "issues": [],
+      "defective": false
+    },
+    {
+      "doc_id": "doc_0046",
+      "layout": "narrative_v2",
+      "escalate": true,
+      "reasons": [
+        "validation_error:silent_null"
+      ],
+      "wrong_fields": [
+        "vat_rate"
+      ],
+      "hallucinated": [],
+      "issues": [
+        "silent_null"
+      ],
+      "defective": true
+    },
+    {
+      "doc_id": "doc_0047",
+      "layout": "scan_noise_v3",
+      "escalate": true,
+      "reasons": [
+        "validation_error:critical_field_missing,silent_null",
+        "critical_unresolved:supplier_name",
+        "low_confidence:0.00<0.75"
+      ],
+      "wrong_fields": [
+        "supplier_name",
+        "vat_amount"
+      ],
+      "hallucinated": [
+        "customer_name"
+      ],
+      "issues": [
+        "critical_field_missing",
+        "silent_null",
+        "silent_null"
+      ],
+      "defective": true
+    },
+    {
+      "doc_id": "doc_0048",
+      "layout": "tabular_v1",
+      "escalate": true,
+      "reasons": [
+        "validation_error:unknown_currency",
+        "low_confidence:0.64<0.75"
+      ],
+      "wrong_fields": [
+        "currency"
+      ],
+      "hallucinated": [
+        "supplier_vat",
+        "weight_kg"
+      ],
+      "issues": [
+        "unknown_currency"
+      ],
+      "defective": true
+    },
+    {
+      "doc_id": "doc_0049",
+      "layout": "narrative_v2",
+      "escalate": false,
+      "reasons": [],
+      "wrong_fields": [
+        "supplier_vat"
+      ],
+      "hallucinated": [],
+      "issues": [],
+      "defective": true
+    },
+    {
+      "doc_id": "doc_0050",
+      "layout": "scan_noise_v3",
+      "escalate": true,
+      "reasons": [
+        "validation_error:vat_rate_reconciliation"
+      ],
+      "wrong_fields": [],
+      "hallucinated": [
+        "vat_rate"
+      ],
+      "issues": [
+        "vat_rate_reconciliation"
+      ],
+      "defective": true
+    },
+    {
+      "doc_id": "doc_0051",
+      "layout": "tabular_v1",
+      "escalate": false,
+      "reasons": [],
+      "wrong_fields": [],
+      "hallucinated": [
+        "shipment_ref"
+      ],
+      "issues": [],
+      "defective": true
+    },
+    {
+      "doc_id": "doc_0052",
+      "layout": "narrative_v2",
+      "escalate": true,
+      "reasons": [
+        "validation_error:silent_null,unknown_currency",
+        "low_confidence:0.53<0.75"
+      ],
+      "wrong_fields": [
+        "currency",
+        "parcel_count"
+      ],
+      "hallucinated": [],
+      "issues": [
+        "silent_null",
+        "unknown_currency"
+      ],
+      "defective": true
+    },
+    {
+      "doc_id": "doc_0053",
+      "layout": "scan_noise_v3",
+      "escalate": true,
+      "reasons": [
+        "low_confidence:0.62<0.75"
+      ],
+      "wrong_fields": [
+        "supplier_name",
+        "vat_amount"
+      ],
+      "hallucinated": [
+        "due_date"
+      ],
+      "issues": [],
+      "defective": true
+    },
+    {
+      "doc_id": "doc_0054",
+      "layout": "tabular_v1",
+      "escalate": false,
+      "reasons": [],
+      "wrong_fields": [
+        "subtotal"
+      ],
+      "hallucinated": [],
+      "issues": [],
+      "defective": true
+    },
+    {
+      "doc_id": "doc_0055",
+      "layout": "narrative_v2",
+      "escalate": true,
+      "reasons": [
+        "validation_error:total_reconciliation"
+      ],
+      "wrong_fields": [
+        "total",
+        "parcel_count"
+      ],
+      "hallucinated": [],
+      "issues": [
+        "total_reconciliation"
+      ],
+      "defective": true
+    },
+    {
+      "doc_id": "doc_0056",
+      "layout": "scan_noise_v3",
+      "escalate": true,
+      "reasons": [
+        "low_confidence:0.74<0.75"
+      ],
+      "wrong_fields": [
+        "supplier_name"
+      ],
+      "hallucinated": [],
+      "issues": [],
+      "defective": true
+    },
+    {
+      "doc_id": "doc_0057",
+      "layout": "tabular_v1",
+      "escalate": true,
+      "reasons": [
+        "validation_error:critical_field_missing,silent_null",
+        "critical_unresolved:invoice_date",
+        "low_confidence:0.00<0.75"
+      ],
+      "wrong_fields": [
+        "invoice_number",
+        "invoice_date",
+        "supplier_name",
+        "subtotal"
+      ],
+      "hallucinated": [
+        "customer_name"
+      ],
+      "issues": [
+        "critical_field_missing",
+        "silent_null",
+        "silent_null"
+      ],
+      "defective": true
+    },
+    {
+      "doc_id": "doc_0058",
+      "layout": "narrative_v2",
+      "escalate": true,
+      "reasons": [
+        "validation_error:critical_field_missing,silent_null",
+        "critical_unresolved:invoice_date",
+        "low_confidence:0.00<0.75"
+      ],
+      "wrong_fields": [
+        "invoice_date"
+      ],
+      "hallucinated": [
+        "customer_name"
+      ],
+      "issues": [
+        "critical_field_missing",
+        "silent_null"
+      ],
+      "defective": true
+    },
+    {
+      "doc_id": "doc_0059",
+      "layout": "scan_noise_v3",
+      "escalate": true,
+      "reasons": [
+        "validation_error:critical_field_missing,silent_null,total_reconciliation,vat_rate_reconciliation",
+        "critical_unresolved:invoice_date",
+        "low_confidence:0.00<0.75"
+      ],
+      "wrong_fields": [
+        "invoice_date",
+        "vat_amount",
+        "parcel_count"
+      ],
+      "hallucinated": [],
+      "issues": [
+        "critical_field_missing",
+        "silent_null",
+        "total_reconciliation",
+        "vat_rate_reconciliation"
+      ],
+      "defective": true
+    }
+  ]
+}
