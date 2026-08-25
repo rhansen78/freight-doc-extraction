@@ -28,7 +28,8 @@ CRITICAL_FIELDS = (
     "total",
 )
 
-ALL_FIELDS = CRITICAL_FIELDS + (
+ALL_FIELDS = (
+    *CRITICAL_FIELDS,
     "due_date",
     "supplier_vat",
     "customer_name",

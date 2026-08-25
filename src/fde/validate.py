@@ -82,12 +82,15 @@ def validate(ex: Extraction) -> list[Issue]:
             )
 
     # --- arithmetic -------------------------------------------------------
-    subtotal, vat_amount, total = _dec(f.get("subtotal")), _dec(f.get("vat_amount")), _dec(f.get("total"))
+    subtotal = _dec(f.get("subtotal"))
+    vat_amount = _dec(f.get("vat_amount"))
+    total = _dec(f.get("total"))
     vat_rate = _dec(f.get("vat_rate"))
 
     if ex.line_items:
         line_sum = sum((Decimal(str(i.amount)) for i in ex.line_items), Decimal("0"))
-        if subtotal is not None and abs(line_sum - subtotal) > MONEY_TOL:
+        mismatch = subtotal is not None and abs(line_sum - subtotal) > MONEY_TOL
+        if mismatch:
             issues.append(
                 Issue("line_items_vs_subtotal", "error",
                       f"line items sum to {line_sum}, subtotal says {subtotal}",
@@ -101,13 +104,13 @@ def validate(ex: Extraction) -> list[Issue]:
                           f"{i.description!r}: {i.quantity} x {i.unit_price} != {i.amount}")
                 )
 
-    if subtotal is not None and vat_amount is not None and total is not None:
-        if abs(subtotal + vat_amount - total) > MONEY_TOL:
-            issues.append(
-                Issue("total_reconciliation", "error",
-                      f"{subtotal} + {vat_amount} != {total}",
-                      ("subtotal", "vat_amount", "total"))
-            )
+    have_totals = None not in (subtotal, vat_amount, total)
+    if have_totals and abs(subtotal + vat_amount - total) > MONEY_TOL:
+        issues.append(
+            Issue("total_reconciliation", "error",
+                  f"{subtotal} + {vat_amount} != {total}",
+                  ("subtotal", "vat_amount", "total"))
+        )
 
     if subtotal is not None and vat_rate is not None and vat_amount is not None:
         expected = subtotal * vat_rate
@@ -125,19 +128,27 @@ def validate(ex: Extraction) -> list[Issue]:
     cur = f.get("currency")
     if cur is not None and cur not in ISO_CURRENCIES:
         issues.append(
-            Issue("unknown_currency", "error", f"{cur!r} is not a currency we settle in", ("currency",))
+            Issue("unknown_currency", "error",
+                  f"{cur!r} is not a currency we settle in", ("currency",))
         )
 
-    inv_d, due_d = _as_date(f.get("invoice_date")), _as_date(f.get("due_date"))
+    inv_d = _as_date(f.get("invoice_date"))
+    due_d = _as_date(f.get("due_date"))
     if f.get("invoice_date") is not None and inv_d is None:
-        issues.append(Issue("unparseable_date", "error", "invoice_date is not a date", ("invoice_date",)))
+        issues.append(
+            Issue("unparseable_date", "error",
+                  "invoice_date is not a date", ("invoice_date",))
+        )
     if inv_d and due_d and due_d < inv_d:
         issues.append(
             Issue("due_before_invoice", "error",
                   f"due {due_d} precedes invoice {inv_d}", ("due_date",))
         )
     if inv_d and inv_d > date(2027, 1, 1):
-        issues.append(Issue("implausible_date", "warning", f"invoice_date {inv_d} is in the far future", ("invoice_date",)))
+        issues.append(
+            Issue("implausible_date", "warning",
+                  f"invoice_date {inv_d} is in the far future", ("invoice_date",))
+        )
 
     vat_no = f.get("supplier_vat")
     if vat_no is not None:

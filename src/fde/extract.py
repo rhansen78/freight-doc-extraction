@@ -210,7 +210,8 @@ class StubExtractor:
                 continue
 
             val = getattr(truth, name, None)
-            val = None if val is None else (val.isoformat() if hasattr(val, "isoformat") else str(val))
+            if val is not None:
+                val = val.isoformat() if hasattr(val, "isoformat") else str(val)
 
             if val is not None and self.rng.random() < self.wrong_rate:
                 val = self._corrupt(name, val)

@@ -15,3 +15,10 @@ evals/results/*.json
 # Never commit an API key.
 .env
 .env.*
+
+# Failed venv attempt parked here; device shell cannot unlink in this mount.
+_to_delete/
+_to_delete_venv/
+
+# Stale git locks parked here (mount forbids unlink).
+.gitlocks/

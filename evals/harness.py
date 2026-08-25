@@ -20,11 +20,11 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "evals"))
 
-from fde.generate import build_corpus                    # noqa: E402
-from fde.extract import ClaudeExtractor, StubExtractor   # noqa: E402
-from fde.policy import CONFIDENCE_FLOOR, decide          # noqa: E402
-from fde.validate import validate                        # noqa: E402
-from metrics import score_document, summarise            # noqa: E402
+from fde.extract import ClaudeExtractor, StubExtractor
+from fde.generate import build_corpus
+from fde.policy import CONFIDENCE_FLOOR, decide
+from fde.validate import validate
+from metrics import score_document, summarise
 
 SPLITS = {"dev": slice(0, 30), "heldout": slice(30, 60), "all": slice(0, None)}
 

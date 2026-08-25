@@ -140,10 +140,10 @@ def render(
     rng: random.Random | None = None,
 ) -> str:
     absent_set = set(absent or [])
-    if layout == "narrative_v2":
-        text = _narrative(inv, absent_set)
-    else:
-        text = _tabular(inv, absent_set)
+    text = (
+        _narrative(inv, absent_set) if layout == "narrative_v2"
+        else _tabular(inv, absent_set)
+    )
     if layout == "scan_noise_v3":
         text = _noise(text, rng or random.Random(0))
     return text

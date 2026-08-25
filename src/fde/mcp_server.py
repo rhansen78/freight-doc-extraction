@@ -22,13 +22,13 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from mcp.server.fastmcp import FastMCP  # noqa: E402
+from mcp.server.fastmcp import FastMCP
 
-from fde.extract import ClaudeExtractor, StubExtractor  # noqa: E402
-from fde.generate import build_corpus                   # noqa: E402
-from fde.policy import decide                           # noqa: E402
-from fde.schema import Document, FreightInvoice         # noqa: E402
-from fde.validate import validate                       # noqa: E402
+from fde.extract import ClaudeExtractor, StubExtractor
+from fde.generate import build_corpus
+from fde.policy import decide
+from fde.schema import Document, FreightInvoice
+from fde.validate import validate
 
 mcp = FastMCP("freight-doc-extraction")
 

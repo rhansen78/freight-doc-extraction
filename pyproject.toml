@@ -8,7 +8,7 @@ dependencies = ["pydantic>=2.0"]
 [project.optional-dependencies]
 claude = ["anthropic>=0.40"]
 mcp = ["mcp>=1.2"]
-dev = ["pytest>=8.0", "ruff>=0.6"]
+dev = ["pytest>=8.0", "ruff>=0.16,<0.17"]
 
 [project.scripts]
 fde-mcp = "fde.mcp_server:main"
@@ -26,3 +26,15 @@ testpaths = ["tests"]
 [tool.ruff]
 line-length = 100
 src = ["src", "evals", "tests"]
+
+# Rules are selected explicitly rather than left to ruff's defaults, which move
+# between releases. A lint that changes meaning on `pip install -U ruff` fails
+# CI for reasons unrelated to the change under review.
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF"]
+ignore = [
+  "E402",  # module-level import after sys.path setup: deliberate in the runners
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["fde", "metrics"]
