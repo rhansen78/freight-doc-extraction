@@ -158,6 +158,39 @@ What survives is exactly what deterministic validation cannot reach:
 
 Confidence gating caught none of them. The model was confident and wrong.
 
+### The hallucinations were new
+
+Run 1 produced **zero** hallucinations across 30 documents. Run 2 produced two.
+The failure class that now dominates did not exist before the contract was
+clarified.
+
+So the honest reading is not "the policy degraded" but "the defect population
+changed species". Run 1's defects were almost entirely artefacts of the
+ambiguous specification; run 2's are invention and OCR misreads. The policy was
+never tested against invention in run 1, because there was none to catch — its
+apparent competence was measured against a defect class that no longer exists.
+
+Why a more prescriptive contract would *introduce* invention is unexplained. One
+plausible mechanism is that instructing a model firmly on the form a value must
+take nudges it toward producing a well-formed value in cases where it should
+produce none. That is a hypothesis, not a finding. Testing it needs a run
+designed for the purpose, on the dev split.
+
+### A known weakness in this measurement
+
+The contract fix was made **in response to a held-out run**, and the result was
+then scored on that same held-out split. That is adjusting the system against
+the data used to report it — a milder form of the failure `docs/EVAL.md` exists
+to prevent, committed by the person who wrote that document.
+
+It is disclosed rather than quietly fixed because the alternative is worse: a
+reader who works it out independently is entitled to distrust every other number
+here. The figures above stand as the best available measurement of this
+pipeline. They are not a clean held-out result.
+
+A clean one is available and not yet run: `--split fresh --n 90` scores documents
+60–89, which nothing has been tuned against, exactly once.
+
 ### What this says to do next
 
 Stated rather than done, because these numbers are the held-out split:

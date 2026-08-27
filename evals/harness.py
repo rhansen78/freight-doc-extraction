@@ -26,7 +26,15 @@ from fde.policy import CONFIDENCE_FLOOR, decide
 from fde.validate import validate
 from metrics import score_document, summarise
 
-SPLITS = {"dev": slice(0, 30), "heldout": slice(30, 60), "all": slice(0, None)}
+# "fresh" exists because the held-out split has been reported on twice with a
+# contract change in between (see docs/EVAL.md). It needs --n 90 and should be
+# scored exactly once.
+SPLITS = {
+    "dev": slice(0, 30),
+    "heldout": slice(30, 60),
+    "fresh": slice(60, 90),
+    "all": slice(0, None),
+}
 
 
 def run(extractor, docs, verbose=False):
@@ -126,6 +134,10 @@ def main() -> int:
     args = ap.parse_args()
 
     docs = build_corpus(n=args.n, seed=args.seed)[SPLITS[args.split]]
+    if not docs:
+        print(f"No documents in split {args.split!r} at --n {args.n}. "
+              f"The 'fresh' split needs --n 90.")
+        return 1
     extractor = StubExtractor() if args.extractor == "stub" else ClaudeExtractor(args.model)
     is_stub = getattr(extractor, "is_stub", False)
 

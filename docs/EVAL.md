@@ -41,6 +41,24 @@ reports a number, the number is real, and it does not survive contact with the
 next thirty documents. The harness marks any dev-split report as optimistic in
 its own output rather than trusting the reader to remember.
 
+### Where this discipline was broken
+
+It is worth recording that the author violated the rule above. The extraction
+contract was clarified in response to a held-out run — 14 of 17 errors landing
+on one field made the ambiguity obvious — and the corrected system was then
+scored on that same held-out split. Nothing was tuned to make a number look
+better, and the change was to a specification rather than a threshold, but the
+information flowed from the reporting split back into the system, which is the
+thing this section forbids.
+
+The result is disclosed in the README rather than reported as clean. A third
+split (`--split fresh --n 90`, documents 60–89) exists so the measurement can be
+taken once against data nothing has touched.
+
+The general lesson is the uncomfortable one: this discipline is easy to state
+and easy to breach without noticing, because the breach arrives disguised as an
+obvious bug fix.
+
 ## Metrics, in priority order
 
 **`escaped_defect_rate`** — of documents auto-posted, the fraction that were
