@@ -132,7 +132,7 @@ def main() -> int:
     print(f"Running {extractor.name} over {len(docs)} documents ({args.split} split)")
     try:
         scores, escalated, extractions, rows = run(extractor, docs, args.verbose)
-    except Exception as e:  # noqa: BLE001 - surface provider errors readably
+    except Exception as e:  # surface provider errors readably
         msg = str(e)
         if "credit balance is too low" in msg:
             print("\nStopped: the Anthropic account has no API credits.\n"

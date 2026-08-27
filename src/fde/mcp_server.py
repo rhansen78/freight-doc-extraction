@@ -22,7 +22,11 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from mcp.server.fastmcp import FastMCP
+# The FastMCP import moved namespace between mcp 1.x and 2.x; accept either.
+try:
+    from mcp.server.fastmcp import FastMCP
+except ImportError:  # pragma: no cover - depends on installed mcp version
+    from mcp.server import FastMCP
 
 from fde.extract import ClaudeExtractor, StubExtractor
 from fde.generate import build_corpus
