@@ -13,8 +13,9 @@ lint:
 eval:
 	python evals/harness.py --extractor stub --split heldout --out evals/results
 
-# Requires ANTHROPIC_API_KEY.
+# Requires ANTHROPIC_API_KEY. Sourced from .env if present (git-ignored).
 eval-real:
+	@set -a; [ -f .env ] && . ./.env; set +a; \
 	python evals/harness.py --extractor claude --split heldout --out evals/results
 
 ab:

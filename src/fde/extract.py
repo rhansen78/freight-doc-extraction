@@ -109,22 +109,42 @@ class ClaudeExtractor:
         self.max_tokens = max_tokens
         self.name = f"claude:{self.model}"
 
+    # Rate limits are a normal operating condition on a shared tier, not an
+    # error: a run that dies two-thirds through because of one 429 wastes the
+    # spend on every document before it. Backoff is cheaper than a rerun.
+    def _call_with_retry(self, client, anthropic, doc, attempts: int = 5):
+        delay = 2.0
+        for i in range(attempts):
+            try:
+                return client.messages.create(
+                    model=self.model,
+                    max_tokens=self.max_tokens,
+                    system=SYSTEM_PROMPT,
+                    tools=[TOOL_SCHEMA],
+                    tool_choice={"type": "tool", "name": "record_invoice"},
+                    messages=[{
+                        "role": "user",
+                        "content": f"<document>\n{doc.text}\n</document>",
+                    }],
+                )
+            except (anthropic.RateLimitError, anthropic.APIStatusError) as e:
+                status = getattr(e, "status_code", None)
+                retryable = isinstance(e, anthropic.RateLimitError) or (
+                    status is not None and status >= 500
+                )
+                if not retryable or i == attempts - 1:
+                    raise
+                print(f"    retry {i + 1}/{attempts - 1} after {delay:.0f}s ({type(e).__name__})")
+                time.sleep(delay)
+                delay *= 2
+        raise RuntimeError("unreachable")
+
     def extract(self, doc: Document) -> Extraction:
         import anthropic  # imported lazily so the stub path needs no SDK
 
         client = anthropic.Anthropic()
         t0 = time.perf_counter()
-        resp = client.messages.create(
-            model=self.model,
-            max_tokens=self.max_tokens,
-            system=SYSTEM_PROMPT,
-            tools=[TOOL_SCHEMA],
-            tool_choice={"type": "tool", "name": "record_invoice"},
-            messages=[{
-                "role": "user",
-                "content": f"<document>\n{doc.text}\n</document>",
-            }],
-        )
+        resp = self._call_with_retry(client, anthropic, doc)
         latency_ms = (time.perf_counter() - t0) * 1000
 
         payload = next(
