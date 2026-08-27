@@ -3,6 +3,8 @@ name = "freight-doc-extraction"
 version = "0.1.0"
 description = "Agentic freight-document extraction with a measured evaluation harness"
 requires-python = ">=3.10"
+license = "MIT"
+authors = [{name = "Rasmus Hansen"}]
 dependencies = ["pydantic>=2.0"]
 
 [project.optional-dependencies]

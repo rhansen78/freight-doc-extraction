@@ -181,3 +181,9 @@ Every supplier, customer, rate and document in this repository is invented by
 `generate.py` from fixed word lists. There is no real invoice here, no real
 company, and nothing derived from any employer's system.
 
+
+---
+
+## License
+
+MIT — see [LICENSE](LICENSE).
