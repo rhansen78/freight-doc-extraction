@@ -37,9 +37,12 @@ would ship.
 `test_field_accuracy_can_hide_hallucination`. Both columns are the stub with
 different injected failure modes — see the note under Results.</sub>
 
-This is not a hypothetical. It is asserted as a test — `test_field_accuracy_can_hide_hallucination`
-in `tests/test_metrics.py` — because it is the failure mode that survives an
-extraction project's demo and shows up three months into production.
+This is not a hypothetical, and not only a property of a rigged stub. It is
+asserted as a test (`test_field_accuracy_can_hide_hallucination` in
+`tests/test_metrics.py`), and it showed up on the first real measurement:
+`claude-sonnet-4-5` reads **99.5%** of printed fields correctly on the held-out
+split and still posts **14.3%** of its unattended documents wrong. See
+[Results](#results).
 
 Measuring it requires knowing which fields were genuinely absent from each
 document. That is knowable here because the corpus is **generated from ground
@@ -91,10 +94,90 @@ rather than collapsing them into a single score that hides the trade.
 
 ## Results
 
-### Held-out split — stub extractor
+Held-out split (documents 30–59), `claude-sonnet-4-5`, August 2026.
+
+| metric | value |
+|---|---:|
+| field accuracy | 99.5% |
+| hallucination rate | 4.5% |
+| absence recall | 95.5% |
+| auto-post rate | 93.3% |
+| **escaped defect rate** | **14.3%** |
+| unnecessary escalation | 100% |
+| corpus defect rate | 13.3% |
+
+By layout: `tabular_v1` 100.0%, `narrative_v2` 100.0%, `scan_noise_v3` 98.4%.
+Latency p50 6.7 s, p95 9.4 s.
+
+**Read the first and fifth rows together.** The model reads 99.5% of printed
+fields correctly, and one in seven of the documents it posts without review is
+still wrong. That is the argument at the top of this page, measured on a real
+model rather than asserted with a stub.
+
+### What the first real run found
+
+The harness was pointed at a real model twice. Both runs found something, and
+neither finding was the one expected.
+
+**Run 1 — the specification was wrong, not the model.** 14 of 17 field errors
+landed on `vat_rate`, every one firing `vat_rate_reconciliation`. The document
+prints "VAT @ 25%", the model returned `25`, ground truth held `0.25`, and
+nothing in the prompt or the tool schema said which form was wanted. That is an
+underspecified contract, not a misread. Fixed in the contract — units are now
+stated in the system prompt and carried as per-field descriptions in the tool
+schema, where the model actually reads them.
+
+**Run 2 — fixing the contract improved every headline number and made the
+system less safe.**
+
+| | run 1 (ambiguous spec) | run 2 (spec fixed) |
+|---|---:|---:|
+| field accuracy | 95.5% | 99.5% |
+| auto-post rate | 50.0% | 93.3% |
+| corpus defect rate | 50.0% | 13.3% |
+| **escaped defect rate** | 6.7% | **14.3%** |
+| hallucination rate | 0.0% | **4.5%** |
+| unnecessary escalation | 6.7% | **100%** |
+
+All four defective documents were auto-posted; none were caught. Both escalated
+documents were clean. Across 30 documents exactly one validation rule fired, and
+only as a warning.
+
+The escalation policy had not been detecting defects. `vat_rate_reconciliation`
+fired on 14 documents that were defective *because of the same ambiguity that
+made the rule fire* — the discrimination was an artefact of the bug. Remove the
+bug and no signal remains.
+
+What survives is exactly what deterministic validation cannot reach:
+
+- `doc_0031`, `doc_0043` — the model invented a `vat_rate` for documents that
+  printed none. Internally consistent, so every arithmetic rule passes.
+- `doc_0038` — `supplier_vat` misread under OCR noise. `vat_number_shape`
+  noticed, but it is a warning and does not escalate.
+- `doc_0059` — `customer_name` misread. Free text, nothing to reconcile against.
+
+Confidence gating caught none of them. The model was confident and wrong.
+
+### What this says to do next
+
+Stated rather than done, because these numbers are the held-out split:
+
+1. Promote `vat_number_shape` from warning to error, which would catch
+   `doc_0038`.
+2. Add a cheap absence check — re-ask, cheaply and in isolation, whether a
+   field the model returned actually appears on the page. Invention is the
+   dominant residual failure and no arithmetic rule can see it.
+3. Calibrate confidence against observed error instead of trusting it raw.
+
+Tuning any of these against the table above and then republishing it would be
+threshold-fitting on the reporting split — the failure `docs/EVAL.md` exists to
+prevent. The legitimate route is to change them on the dev split and re-run
+held-out once.
+
+### Harness validation — stub extractor
 
 The stub is a deterministic fake with **injected** failure modes. These numbers
-demonstrate that the harness detects those failures. **They measure no model.**
+show the harness detects those failures. **They measure no model.**
 
 | metric | value |
 |---|---:|
@@ -105,24 +188,6 @@ demonstrate that the harness detects those failures. **They measure no model.**
 | unnecessary escalation | 0.0% |
 | field accuracy | 89.4% |
 
-Note the gap between the last row and the first: 89% field accuracy, and nearly
-half of the unattended postings wrong. That gap is the entire argument
-of this repository.
-
-### Held-out split — real model
-
-_Not yet run. `make eval-real` fills this in; the table stays empty until it
-does rather than carrying a number nobody measured._
-
-| metric | value |
-|---|---:|
-| escaped defect rate | — |
-| hallucination rate | — |
-| absence recall | — |
-| auto-post rate | — |
-| field accuracy | — |
-
----
 
 ## Running it
 
