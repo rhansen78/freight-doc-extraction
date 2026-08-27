@@ -1,5 +1,8 @@
 # freight-doc-extraction
 
+[![ci](https://github.com/rhansen78/freight-doc-extraction/actions/workflows/ci.yml/badge.svg)](https://github.com/rhansen78/freight-doc-extraction/actions/workflows/ci.yml)
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 Agentic extraction of structured data from freight invoices, with an evaluation
 harness that measures the thing that actually matters: **how often a wrong
 document gets posted without anyone looking at it.**
