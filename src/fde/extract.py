@@ -39,12 +39,34 @@ is a defect that costs more to find than the missing field would have cost.
 and a total but no VAT amount, vat_amount is null -- do not subtract.
 3. Do not normalise away information. Copy identifiers exactly as printed, \
 including prefixes and separators.
-4. Dates as ISO 8601 (YYYY-MM-DD). Money as a plain decimal string with no \
-thousands separators and no currency symbol. Currency as a 3-letter ISO code.
+4. Units and formats, exactly:
+   - dates as ISO 8601 (YYYY-MM-DD)
+   - money as a plain decimal string, no thousands separators, no currency symbol
+   - currency as a 3-letter ISO code
+   - vat_rate as a DECIMAL FRACTION, never a percentage: a document showing \
+"VAT @ 25%" or "twenty-five per cent" is vat_rate "0.25"
+   - weight_kg in kilogrammes, as a plain decimal string
 5. Give each field a confidence in [0, 1] reflecting how clearly you could read \
 it. Documents may be OCR-corrupted; a value you reconstructed from a damaged \
 string should carry lower confidence than one you read cleanly.
 """
+
+# Descriptions only for fields where the document's own wording is ambiguous
+# about units or form. The first real eval run found every miss on vat_rate was
+# this: the page says "VAT @ 25%", the model returned 25, ground truth held 0.25.
+# That was an underspecified contract, not a misread -- so it is fixed in the
+# contract.
+_FIELD_DOCS = {
+    "vat_rate": "Decimal fraction, NOT a percentage. 25% -> 0.25. 0% -> 0.00.",
+    "weight_kg": "Gross weight in kilogrammes, plain decimal string.",
+    "parcel_count": "Integer count of parcels or packages.",
+    "invoice_date": "ISO 8601 date, YYYY-MM-DD.",
+    "due_date": "ISO 8601 date, YYYY-MM-DD.",
+    "currency": "Three-letter ISO 4217 code, e.g. EUR, DKK, SEK, NOK.",
+    "subtotal": "Charges before tax, plain decimal string, no currency symbol.",
+    "vat_amount": "Tax amount, plain decimal string, no currency symbol.",
+    "total": "Amount payable including tax, plain decimal string.",
+}
 
 TOOL_SCHEMA = {
     "name": "record_invoice",
@@ -55,7 +77,14 @@ TOOL_SCHEMA = {
             "fields": {
                 "type": "object",
                 "description": "Field name -> value, or null when not present on the document.",
-                "properties": {name: {"type": ["string", "number", "null"]} for name in ALL_FIELDS},
+                "properties": {
+                    name: (
+                        {"type": ["string", "number", "null"], "description": _FIELD_DOCS[name]}
+                        if name in _FIELD_DOCS
+                        else {"type": ["string", "number", "null"]}
+                    )
+                    for name in ALL_FIELDS
+                },
             },
             "fields_unresolved": {
                 "type": "array",
