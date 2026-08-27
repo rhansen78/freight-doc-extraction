@@ -130,7 +130,24 @@ def main() -> int:
     is_stub = getattr(extractor, "is_stub", False)
 
     print(f"Running {extractor.name} over {len(docs)} documents ({args.split} split)")
-    scores, escalated, extractions, rows = run(extractor, docs, args.verbose)
+    try:
+        scores, escalated, extractions, rows = run(extractor, docs, args.verbose)
+    except Exception as e:  # noqa: BLE001 - surface provider errors readably
+        msg = str(e)
+        if "credit balance is too low" in msg:
+            print("\nStopped: the Anthropic account has no API credits.\n"
+                  "  Add credits at https://platform.claude.com/settings/billing,\n"
+                  "  or run the stub instead:  make eval")
+            return 2
+        if "authentication" in msg.lower() or "401" in msg:
+            print("\nStopped: the API key was rejected.\n"
+                  "  Check ANTHROPIC_API_KEY in .env is complete and not expired.")
+            return 2
+        if "not_found" in msg or "404" in msg:
+            print(f"\nStopped: model {getattr(extractor, 'model', '?')!r} is not available "
+                  "on this account.\n  Set FDE_MODEL to one that is.")
+            return 2
+        raise
     summary = summarise(scores, escalated, extractions)
 
     meta = {
